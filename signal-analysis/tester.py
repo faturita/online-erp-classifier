@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import joblib
 import numpy as np
 from sklearn.metrics import roc_curve, auc, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn import metrics
+from sklearn.metrics import roc_auc_score
 from scipy import interp
 import utils
 
@@ -46,6 +49,22 @@ def test_classifier(classifier_path, test_experiences, n=1):
     prediction = classifier.predict(testing_epochs_data)
     print("Accuracy: {}".format(accuracy_score(testing_labels, prediction)))
 
+    target_names=['hit','nohit']
+
+    report = classification_report(testing_labels, prediction, target_names=target_names)
+    print(report)
+
+    C = confusion_matrix(testing_labels, prediction)
+    acc = (float(C[0,0])+float(C[1,1])) / ( len(testing_labels))
+    print(C)
+   
+
     prediction_proba = classifier.predict_proba(testing_epochs_data)
     plot_prediction_results(prediction_proba, testing_labels)
+
+    testing_labels = np.asarray( testing_labels )
+
+    print('Accuracy %f' % acc)
+
+
     return prediction
